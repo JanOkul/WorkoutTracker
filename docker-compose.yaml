@@ -1,0 +1,17 @@
+name: workout-tracker
+
+services:
+  database:
+    build: ./postgres
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_pass
+      POSTGRES_USER: admin
+      POSTGRES_DB: dihb
+    secrets:
+      - pg_pass
+    ports:
+      - 5432:5432
+ 
+secrets:
+  pg_pass:
+    file: ./postgres/pg_pass.txt
