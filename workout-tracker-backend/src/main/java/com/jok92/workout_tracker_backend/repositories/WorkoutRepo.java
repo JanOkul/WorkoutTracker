@@ -10,6 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface WorkoutRepo extends JpaRepository<WorkoutModel, Long> {
-
     Optional<WorkoutModel> findByUserIdAndDateOfWorkout(UUID uuid, LocalDate date);
 }

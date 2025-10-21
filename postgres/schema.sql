@@ -46,7 +46,10 @@ CREATE TABLE IF NOT EXISTS exercises (
 	CONSTRAINT fk_workout
 		FOREIGN KEY (workout_id) 
 		REFERENCES WORKOUTS(id) 
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
+		
+	CONSTRAINT unique_exercise_sets
+		UNIQUE(workout_id, exercise_id, set_number)
 		
 );
 	

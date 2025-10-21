@@ -1,6 +1,5 @@
-package com.jok92.workout_tracker_backend.models.workout;
+package com.jok92.workout_tracker_backend.models.workout.Requests;
 
-import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.ExerciseModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class NewWorkouts {
-    LocalDate dateOfWorkout;
     Integer exerciseId;
     List<NewExercise> newExercises;
 }
