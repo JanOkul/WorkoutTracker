@@ -8,7 +8,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +18,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
 
@@ -41,16 +41,24 @@ public class JwtService {
     }
 
     public String generateToken(String email) {
-        UUID uuid = userRepo.findByEmail(email).orElseThrow(
-                () -> new IllegalStateException("User not found during token generation")).getId();
+        UUID uuid = userRepo.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User not found during token generation")).getId();
         Map<String, Object> claims = new HashMap<>();
+
+        return generateToken(uuid);
+    }
+
+    public String generateToken(UUID uuid) {
+        Map<String, Object> claims = new HashMap<>();
+
+        long minutesInMilliseconds = Duration.ofMinutes(1).toMillis();
 
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(uuid.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000 * 30))
+                .expiration(new Date(System.currentTimeMillis() + minutesInMilliseconds))
                 .and()
                 .signWith(getKey())
                 .compact();

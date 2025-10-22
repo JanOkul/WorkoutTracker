@@ -1,5 +1,6 @@
 package com.jok92.workout_tracker_backend.services;
 
+import com.jok92.workout_tracker_backend.models.auth.AccessRefreshPair;
 import com.jok92.workout_tracker_backend.models.auth.LoginDetails;
 import com.jok92.workout_tracker_backend.models.auth.SignupDetails;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.UserModel;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -25,6 +27,8 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private RefreshService refreshService;
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     /**
@@ -50,11 +54,19 @@ public class AuthService {
      * @param details Email and password details sent by the client.
      * @return A JWT token with the user's UUID.
      */
-    public String login(LoginDetails details) {
+    public AccessRefreshPair login(LoginDetails details) {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(details.getEmail(), details.getPassword())
         );
 
-        return jwtService.generateToken(details.getEmail());
+        UserModel userId = userRepo.findByEmail(details.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        System.out.println(userId.getId().toString());
+        return refreshService.issueNewAccessRefreshPair(userId.getId());
+    }
+
+    public AccessRefreshPair refresh(UUID refreshToken) {
+        return refreshService.refreshAccessToken(refreshToken);
     }
 }

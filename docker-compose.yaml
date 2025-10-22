@@ -11,6 +11,12 @@ services:
       - pg_pass
     ports:
       - 5432:5432
+
+  redis:
+    build: ./redis
+    ports:
+      - 6379:6379
+
  
 secrets:
   pg_pass:
