@@ -2,3 +2,4 @@
 *.env
 .vscode
 .idea
+workout-tracker-backend/target/
