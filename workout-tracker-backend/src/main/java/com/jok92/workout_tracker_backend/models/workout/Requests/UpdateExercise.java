@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateExercise {
-    private Integer oldExerciseId;
-    private Integer oldSetNumber;
     private Integer exerciseId;
     private Integer setNumber;
     private Integer weight;

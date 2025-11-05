@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewExercise {
+    private Integer exerciseId;
     private Integer setNumber;
     private Integer weight;
     private Integer reps;

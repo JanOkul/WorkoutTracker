@@ -7,6 +7,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/pg_pass
       POSTGRES_USER: admin
       POSTGRES_DB: dihb
+    restart: always
     secrets:
       - pg_pass
     ports:
@@ -16,6 +17,7 @@ services:
     build: ./redis
     ports:
       - 6379:6379
+    restart: always
 
  
 secrets:

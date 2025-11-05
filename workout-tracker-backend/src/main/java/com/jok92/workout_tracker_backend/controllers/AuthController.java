@@ -1,13 +1,8 @@
 package com.jok92.workout_tracker_backend.controllers;
 
-import com.jok92.workout_tracker_backend.models.auth.AccessRefreshPair;
-import com.jok92.workout_tracker_backend.models.auth.AccessTokenResponse;
-import com.jok92.workout_tracker_backend.models.auth.LoginDetails;
-import com.jok92.workout_tracker_backend.models.auth.SignupDetails;
+import com.jok92.workout_tracker_backend.models.auth.*;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.UserModel;
-import com.jok92.workout_tracker_backend.services.AuthService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import com.jok92.workout_tracker_backend.services.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -15,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -32,42 +26,66 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDetails details) {
+
         AccessRefreshPair tokenPair = authService.login(details);
-
-        String accessToken = tokenPair.jwtToken();
+        String accessToken = tokenPair.accessToken();
         UUID refreshToken = tokenPair.refreshToken();
-
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.toString())
+        System.out.println("helllooooooooooo");
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken.toString())
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .sameSite("Strict")
-                .path("/api/auth/refresh")
+                .path("/api/auth/")
                 .maxAge(Duration.ofDays(7))
+                .build();
+
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/api/")
+                .maxAge(Duration.ofDays(15))
                 .build();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .body(new AccessTokenResponse(accessToken));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@CookieValue("refresh_token") String cookie) {
+    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String cookie) {
         AccessRefreshPair tokenPair = authService.refresh(UUID.fromString(cookie));
 
-        String accessToken = tokenPair.jwtToken();
+        String accessToken = tokenPair.accessToken();
         UUID refreshToken = tokenPair.refreshToken();
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.toString())
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
-                .path("/api/auth/refresh")
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken.toString())
+                .httpOnly(false)
+                .secure(false)
+                .sameSite("None") //todo change
+                .path("/api/auth/")
                 .maxAge(Duration.ofDays(7))
+                .build();
+
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(false)
+                .secure(false)
+                .sameSite("None")
+                .path("/api/")
+                .maxAge(Duration.ofMinutes(15))
                 .build();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .body(new AccessTokenResponse(accessToken));
+    }
+
+    @GetMapping("/status")
+    public StatusResponse status(@CookieValue("refreshToken") String cookie) {
+        System.out.println("HELLLOOOOOO");
+        return new StatusResponse(authService.status(cookie));
     }
 
 }

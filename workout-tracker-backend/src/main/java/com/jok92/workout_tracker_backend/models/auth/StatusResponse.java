@@ -5,8 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginDetails implements AuthDetails{
-    String email;
-    String password;
-    boolean rememberMe;
+public class StatusResponse {
+    Boolean isAuthenticated;
 }
