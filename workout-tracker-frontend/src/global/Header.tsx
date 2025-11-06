@@ -1,8 +1,9 @@
-
 function Header() {
-    return (
-        <h1>Workout Tracker</h1>
-    )
+  return (
+    <header className="shrink-0">
+      <h2 className="m-3">Workout Tracker</h2>
+    </header>
+  );
 }
 
-export default Header
+export default Header;

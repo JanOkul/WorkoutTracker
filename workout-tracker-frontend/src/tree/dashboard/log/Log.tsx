@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -169,7 +171,7 @@ const Log = () => {
   function createWorkout(workout: Workout) {
     return (
       <div>
-        <h2>Workout: {workout.dateOfWorkout}</h2>
+        <h2 className="text-center">{workout.dateOfWorkout}</h2>
 
         {/* For each exercise in the workout*/}
         {workout.exercises.map((ex) => (
@@ -190,38 +192,26 @@ const Log = () => {
     return (
       <form key={set.setNumber} onSubmit={exerciseSubmit}>
         <label>Weight:</label>
-        <input name="weight" type="number" min="0" defaultValue={set.weight} />
+        <Input name="weight" type="number" min="0" defaultValue={set.weight} />
 
         <label>Reps:</label>
-        <input name="reps" type="number" min="0" defaultValue={set.reps} />
+        <Input name="reps" type="number" min="0" defaultValue={set.reps} />
 
-        <input type="hidden" name="date" value={date} />
-        <input type="hidden" name="exerciseId" value={ex.exerciseId} />
-        <input type="hidden" name="setNumber" value={set.setNumber} />
+        <Input type="hidden" name="date" value={date} />
+        <Input type="hidden" name="exerciseId" value={ex.exerciseId} />
+        <Input type="hidden" name="setNumber" value={set.setNumber} />
 
-        <button name="_method" type="submit" value={updateTag}>
+        <Button name="_method" type="submit" value={updateTag}>
           Update
-        </button>
-        <button name="_method" type="submit" value={deleteTag}>
+        </Button>
+        <Button name="_method" type="submit" value={deleteTag}>
           Delete
-        </button>
+        </Button>
       </form>
     );
   }
 
-  return (
-    <>
-      <input
-        name="date"
-        type="date"
-        value={date}
-        max={today}
-        required
-        onChange={(e) => navigate(`/dashboard/log/${e.target.value}`)}
-      />
-      {createWorkout(workout)}
-    </>
-  );
+  return <>{createWorkout(workout)}</>;
 };
 
 export default Log;

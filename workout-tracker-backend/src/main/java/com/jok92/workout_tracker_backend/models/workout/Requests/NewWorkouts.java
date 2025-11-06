@@ -14,5 +14,5 @@ import java.util.List;
 @ToString
 public class NewWorkouts {
     Integer exerciseId;
-    List<NewExercise> newExercises;
+        List<NewExercise> newExercises;
 }

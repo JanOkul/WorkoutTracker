@@ -1,9 +1,8 @@
 function Footer() {
   return (
-    <>
-      <hr />
-      <h1>v0.1</h1>
-    </>
+    <footer className="shrink-0">
+      <p className="text-xs text-muted-foreground">v0.1</p>
+    </footer>
   );
 }
 

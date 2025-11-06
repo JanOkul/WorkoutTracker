@@ -1,7 +1,17 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useEffect, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 export interface isAuthResponse {
   isAuthenticated: boolean;
 }
@@ -14,6 +24,7 @@ const Login = () => {
       const response = await axios.get<isAuthResponse>("/api/auth/status");
       if (response.data.isAuthenticated) {
         console.log("Already authenticated");
+        return;
         navigate("/dashboard");
       }
     } catch {
@@ -55,16 +66,40 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={loginAction}>
-      <label htmlFor="loginEmail">Email Address</label>
-      <input id="loginEmail" name="email" type="email" />
-      <label htmlFor="loginPassword">Password</label>
-      <input id="loginPassword" name="password" type="password" />
-      <label htmlFor="loginRememberMe">Remember Me</label>
-      <input id="loginRememberMe" name="rememberMe" type="checkbox" />
+    <div className="flex flex-col justify-center items-center h-full">
+      <Card className=" w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Log In</CardTitle>
+          <CardAction>
+            <Button variant="link" asChild>
+              <Link to="/signup"> Sign Up </Link>
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={loginAction}>
+            <Label htmlFor="email" className="pb-2">
+              Email Address
+            </Label>
+            <Input id="email" name="email" type="email" />
+            <Label htmlFor="password" className="pb-2 pt-4">
+              Password
+            </Label>
+            <Input id="password" name="password" type="password" />
+            <div className="flex items-center space-x-2 justify-between w-full">
+              <Label htmlFor="rememberMe" className="pb-2 pt-4">
+                Remember Me
+              </Label>
+              <Checkbox id="rememberMe" name="rememberMe" className="" />
+            </div>
 
-      <input id="loginSubmit" value="Log" type="submit" />
-    </form>
+            <Button id="loginSubmit" value="Log" type="submit" className="mt-6">
+              Log In
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
