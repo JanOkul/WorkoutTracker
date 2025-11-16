@@ -15,37 +15,42 @@ const DashboardNav = () => {
   const navigate = useNavigate();
 
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/dashboard"> Home </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
+    <div>
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              asChild
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link to="/dashboard"> Home </Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Log</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <Calendar
-              mode="single"
-              onSelect={(date) => {
-                if (!date) return;
-                const month = date.getMonth() + 1;
-                const day = date.getDate();
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Log</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <Calendar
+                mode="single"
+                onSelect={(date) => {
+                  if (!date) return;
+                  const month = date.getMonth() + 1;
+                  const day = date.getDate();
 
-                const formattedMonth = String(month).padStart(2, "0");
-                const formattedDay = String(day).padStart(2, "0");
-                const url = `/dashboard/log/${date?.getFullYear()}-${formattedMonth}-${formattedDay}`;
+                  const formattedMonth = String(month).padStart(2, "0");
+                  const formattedDay = String(day).padStart(2, "0");
+                  const url = `/dashboard/log/${date?.getFullYear()}-${formattedMonth}-${formattedDay}`;
 
-                navigate(url);
-              }}
-              disabled={{ after: new Date() }}
-              className="rounded-lg border "
-            />
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+                  navigate(url);
+                }}
+                disabled={{ after: new Date() }}
+                className="rounded-lg border "
+              />
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
     // <div>
     //     <nav>
     //         <Link to="/dashboard">Dashboard</Link>

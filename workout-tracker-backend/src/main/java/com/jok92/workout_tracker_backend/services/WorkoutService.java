@@ -1,17 +1,19 @@
 package com.jok92.workout_tracker_backend.services;
 
-import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.ExerciseModel;
+import com.jok92.workout_tracker_backend.exceptions.SetNotFoundException;
+import com.jok92.workout_tracker_backend.exceptions.WorkoutNotFoundException;
+import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.SetModel;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.WorkoutsModel;
-import com.jok92.workout_tracker_backend.models.workout.Requests.DeleteExercise;
-import com.jok92.workout_tracker_backend.models.workout.Requests.NewExercise;
-import com.jok92.workout_tracker_backend.models.workout.Requests.NewWorkouts;
-import com.jok92.workout_tracker_backend.models.workout.Requests.UpdateExercise;
+import com.jok92.workout_tracker_backend.models.workout.Requests.DeleteSet;
+import com.jok92.workout_tracker_backend.models.workout.Requests.NewSet;
+import com.jok92.workout_tracker_backend.models.workout.Requests.UpdateSet;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.DataGetResponse;
-import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.GroupedExerciseSets;
-import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedExerciseModel;
-import com.jok92.workout_tracker_backend.repositories.ExerciseRepo;
+import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.GroupedSets;
+import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedSetModel;
+import com.jok92.workout_tracker_backend.repositories.SetRepo;
 import com.jok92.workout_tracker_backend.repositories.UserRepo;
 import com.jok92.workout_tracker_backend.repositories.WorkoutsRepo;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class WorkoutService {
-    UserRepo userRepo;
-    ExerciseRepo exerciseRepo;
-    WorkoutsRepo workoutsRepo;
-
     @Autowired
-    public WorkoutService(UserRepo userRepo, WorkoutsRepo workoutsRepo, ExerciseRepo exerciseRepo) {
-        this.userRepo = userRepo;
-        this.exerciseRepo = exerciseRepo;
-        this.workoutsRepo = workoutsRepo;
-    }
+    UserRepo userRepo;
+    @Autowired
+    SetRepo setRepo;
+    @Autowired
+    WorkoutsRepo workoutsRepo;
 
 
     /**
@@ -53,11 +51,11 @@ public class WorkoutService {
             return new DataGetResponse(date, new ArrayList<>());
         }
 
-        List<ExerciseModel> exerciseModels = exerciseRepo.findAllByWorkoutId(targetWorkoutModel.get().getId());
+        List<SetModel> setModels = setRepo.findAllByWorkoutId(targetWorkoutModel.get().getId());
         // Remove all the database identifiers from the response.
         return new DataGetResponse(
                 date,
-                groupExerciseSets(exerciseModels)
+                groupExerciseSets(setModels)
         );
     }
 
@@ -65,30 +63,30 @@ public class WorkoutService {
      * Adds single or multiple exercises for a single exercise type.
      * @param userId The target user's UUID
      * @param date The workout that the exercises should be added to.
-     * @param newExercise Data from the client on when and what exercises to add.
+     * @param newSet Data from the client on when and what exercises to add.
      * @return The exercise added to the database.
      */
     @Transactional
-    public ScrubbedExerciseModel addExercisesForDate(UUID userId, LocalDate date, NewExercise newExercise) {
+    public ScrubbedSetModel addExercisesForDate(UUID userId, LocalDate date, NewSet newSet) {
         verifyDate(date);
 
         // Check if workout exists. If empty create new workout.
         WorkoutsModel workout = workoutsRepo.findByUserIdAndDateOfWorkout(userId, date)
                 .orElseGet(() -> workoutsRepo.save(new WorkoutsModel(null, userId, date)));
 
-        ExerciseModel exerciseModel = new ExerciseModel(
+        SetModel setModel = new SetModel(
                                 null,
                                 workout.getId(),
-                                newExercise.getExerciseId(),
-                                newExercise.getSetNumber(),
-                                newExercise.getWeight(),
-                                newExercise.getReps()
+                                newSet.getExerciseId(),
+                                newSet.getSetNumber(),
+                                newSet.getWeight(),
+                                newSet.getReps()
         );
 
-        ExerciseModel dbResponse = exerciseRepo.save(exerciseModel);
+        SetModel dbResponse = setRepo.save(setModel);
 
         // Remove database information from database response
-        return ScrubbedExerciseModel.fromExerciseModel(dbResponse);
+        return ScrubbedSetModel.fromExerciseModel(dbResponse);
 
     }
 
@@ -98,32 +96,32 @@ public class WorkoutService {
      *
      * @param userId         The target user's UUID
      * @param date           The date of the workout the target exercise is in
-     * @param updateExercise What to replace the existing exercise with.
+     * @param updateSet What to replace the existing exercise with.
      * @return The new exercise entry.
      */
     @Transactional
-    public UpdateExercise changeExerciseForDate(UUID userId, LocalDate date, UpdateExercise updateExercise) {
+    public UpdateSet changeExerciseForDate(UUID userId, LocalDate date, UpdateSet updateSet) {
         verifyDate(date);
 
         // Check that the workout exists
         WorkoutsModel workout = workoutsRepo.findByUserIdAndDateOfWorkout(userId, date)
-                .orElseThrow(() -> new EntityNotFoundException("No workouts registered for: " + date.toString()));
+                .orElseThrow(WorkoutNotFoundException::new);
 
-        // Check that the exercise exists
-        ExerciseModel exercise = exerciseRepo.findByWorkoutIdAndExerciseIdAndSetNumber(
-                workout.getId(), updateExercise.getExerciseId(), updateExercise.getSetNumber())
-                .orElseThrow(() -> new EntityNotFoundException("Exercise not found"));
+        // Check that the set exists
+        SetModel set = setRepo.findByWorkoutIdAndExerciseIdAndSetNumber(
+                workout.getId(), updateSet.getExerciseId(), updateSet.getSetNumber())
+                .orElseThrow(SetNotFoundException::new);
 
-        exercise.setExerciseId(updateExercise.getExerciseId());
-        exercise.setSetNumber(updateExercise.getSetNumber());
-        exercise.setWeight(updateExercise.getWeight());
-        exercise.setReps(updateExercise.getReps());
+        set.setExerciseId(updateSet.getExerciseId());
+        set.setSetNumber(updateSet.getSetNumber());
+        set.setWeight(updateSet.getWeight());
+        set.setReps(updateSet.getReps());
 
-        return new UpdateExercise(
-                exercise.getExerciseId(),
-                exercise.getSetNumber(),
-                exercise.getWeight(),
-                exercise.getReps()
+        return new UpdateSet(
+                set.getExerciseId(),
+                set.getSetNumber(),
+                set.getWeight(),
+                set.getReps()
         );
     }
 
@@ -132,19 +130,19 @@ public class WorkoutService {
      * Deletes an exercise from a workout, if the workout has no more exercises, it is also deleted.
      * @param userId The target user's UUID
      * @param date The date the exercise to be removed is on
-     * @param deleteExercise Target exercise details
+     * @param deleteSet Target exercise details
      */
     @Transactional
-    public void deleteExerciseForDate(UUID userId, LocalDate date, DeleteExercise deleteExercise) {
+    public void deleteExerciseForDate(UUID userId, LocalDate date, DeleteSet deleteSet) {
         verifyDate(date);
 
         WorkoutsModel workout = workoutsRepo.findByUserIdAndDateOfWorkout(userId, date)
-                .orElseThrow(() -> new EntityNotFoundException("No workout corresponding to id and date"));
+                .orElseThrow(WorkoutNotFoundException::new);
 
-        exerciseRepo.deleteByWorkoutIdAndSetNumber(workout.getId(), deleteExercise.getSetNumber());
+        setRepo.deleteByWorkoutIdAndSetNumber(workout.getId(), deleteSet.getSetNumber());
 
         // If there are no more exercises corresponding to a workout, remove the workout
-        long numExercises = exerciseRepo.countByWorkoutId(workout.getId());
+        long numExercises = setRepo.countByWorkoutId(workout.getId());
 
         if (numExercises == 0) {
             workoutsRepo.deleteById(workout.getId());
@@ -163,20 +161,20 @@ public class WorkoutService {
         }
     }
 
-    static List<GroupedExerciseSets> groupExerciseSets(List<ExerciseModel> exerciseModels) {
-        Map<Integer, List<ExerciseModel>> groupedExerciseModels = exerciseModels.stream()
-                .collect(Collectors.groupingBy(ExerciseModel::getExerciseId));
+    static List<GroupedSets> groupExerciseSets(List<SetModel> setModels) {
+        Map<Long, List<SetModel>> groupedExerciseModels = setModels.stream()
+                .collect(Collectors.groupingBy(SetModel::getExerciseId));
 
-        List<GroupedExerciseSets> groupedExerciseSets = new ArrayList<>();
+        List<GroupedSets> groupedSets = new ArrayList<>();
 
-        for (Map.Entry<Integer, List<ExerciseModel>> entry: groupedExerciseModels.entrySet()) {
-            Integer exerciseId = entry.getKey();
-            List<ScrubbedExerciseModel> sets = entry.getValue().stream()
-                    .map(ScrubbedExerciseModel::fromExerciseModel).toList();
+        for (Map.Entry<Long, List<SetModel>> entry: groupedExerciseModels.entrySet()) {
+            Long exerciseId = entry.getKey();
+            List<ScrubbedSetModel> sets = entry.getValue().stream()
+                    .map(ScrubbedSetModel::fromExerciseModel).toList();
 
-            groupedExerciseSets.add(new GroupedExerciseSets(exerciseId, sets));
+            groupedSets.add(new GroupedSets(exerciseId, sets));
         }
-        System.out.println(groupedExerciseSets);
-        return groupedExerciseSets;
+        System.out.println(groupedSets);
+        return groupedSets;
     }
 }

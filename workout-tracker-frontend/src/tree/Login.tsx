@@ -1,3 +1,4 @@
+import apiAxios from "@/api/axiosInterceptor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,10 +22,9 @@ const Login = () => {
 
   async function getStatus() {
     try {
-      const response = await axios.get<isAuthResponse>("/api/auth/status");
+      const response = await apiAxios.get<isAuthResponse>("/api/auth/status");
       if (response.data.isAuthenticated) {
         console.log("Already authenticated");
-        return;
         navigate("/dashboard");
       }
     } catch {
@@ -48,7 +48,7 @@ const Login = () => {
     };
 
     try {
-      const response = await axios.post(apiUrl, requestBody);
+      const response = await apiAxios.post(apiUrl, requestBody);
 
       const accessToken = response.data.accessToken;
       console.log("Login successful. Access Token:", accessToken);
@@ -93,7 +93,12 @@ const Login = () => {
               <Checkbox id="rememberMe" name="rememberMe" className="" />
             </div>
 
-            <Button id="loginSubmit" value="Log" type="submit" className="mt-6">
+            <Button
+              id="loginSubmit"
+              value="Log"
+              type="submit"
+              className="mt-6 w-full"
+            >
               Log In
             </Button>
           </form>

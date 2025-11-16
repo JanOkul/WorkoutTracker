@@ -30,13 +30,13 @@ public class UserModel {
     private ZonedDateTime createdAt;
 
     @Column(nullable = false)
-    private Integer age;
+    private Short age;
 
     @Column(nullable = false)
     private Integer weight;
 
     // Constructor for all non DB auto-generated values.
-    public UserModel(String displayName, String email, String password, Integer age, Integer weight) {
+    public UserModel(String displayName, String email, String password, Short age, Integer weight) {
         this.displayName = displayName;
         this.email = email;
         this.password = password;

@@ -1,18 +1,17 @@
-import { RouterProvider } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Footer from "./global/Footer";
 import Header from "./global/Header";
 import "./index.css";
-import { router } from "./main";
 
 function App() {
   return (
-    <div className="flex flex-col h-screen">
+    <main className="flex flex-col h-screen">
       <Header />
-      <main className="h-dvh">
-        <RouterProvider router={router} />
-      </main>
+      <div className=" flex-1 flex flex-col overflow-y-auto">
+        <Outlet />
+      </div>
       <Footer />
-    </div>
+    </main>
   );
 }
 

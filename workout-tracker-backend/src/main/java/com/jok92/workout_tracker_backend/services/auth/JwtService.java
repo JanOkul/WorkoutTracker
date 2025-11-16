@@ -28,6 +28,9 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String signingKey;
 
+    @Value("${jwt.expiryMins}")
+    private Integer expiryMins;
+
     public String generateToken(String email) {
         UUID uuid = userRepo.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("User not found during token generation")).getId();
@@ -39,7 +42,7 @@ public class JwtService {
     public String generateToken(UUID uuid) {
         Map<String, Object> claims = new HashMap<>();
 
-        long minutesInMilliseconds = Duration.ofDays(15).toMillis();
+        long minutesInMilliseconds = Duration.ofMinutes(expiryMins).toMillis();
 
         return Jwts.builder()
                 .claims()

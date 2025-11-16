@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.*;
 
+
 enum JwtError {
     JWT_EXPIRED,
     SIGNATURE_INVALID,
@@ -48,16 +49,15 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = getCookieValue(request, "accessToken");
-        String refreshToken = getCookieValue(request, "refreshToken");
         UUID id;
         logger.debug("Access JWT token value: {}", accessToken);
 
         if (accessToken == null) {
-            logger.debug("Access and refresh token is null");
+            logger.debug("Access token null");
             filterChain.doFilter(request, response);
             return;
         }
-
+        
         try {
             id = jwtService.extractID(accessToken);
             logger.debug("User ID for access token: {}", id);

@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
 import "./index.css";
 import Home from "./tree/Home.tsx";
@@ -10,34 +10,39 @@ import Dashboard from "./tree/dashboard/Dashboard.tsx";
 import DashboardMain from "./tree/dashboard/DashboardMain.tsx";
 import Log from "./tree/dashboard/log/Log.tsx";
 
-export const router = createBrowserRouter([
+export const mainRouter = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
-  },
-
-  {
-    path: "/login",
-    element: <Login />,
-  },
-
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
-
-  {
-    path: "/dashboard",
-    element: <Dashboard />,
+    element: <App />,
     children: [
       {
-        index: true,
-        element: <DashboardMain />,
+        path: "/",
+        element: <Home />,
       },
 
       {
-        path: "log/:date",
-        element: <Log />,
+        path: "/login",
+        element: <Login />,
+      },
+
+      {
+        path: "/signup",
+        element: <SignUp />,
+      },
+
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+        children: [
+          {
+            index: true,
+            element: <DashboardMain />,
+          },
+
+          {
+            path: "log/:date",
+            element: <Log />,
+          },
+        ],
       },
     ],
   },
@@ -45,6 +50,6 @@ export const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={mainRouter} />
   </StrictMode>
 );

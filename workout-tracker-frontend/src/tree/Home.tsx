@@ -11,10 +11,7 @@ function Home() {
 
       <div className="flex justify-center items-center">
         <nav className="space-x-4 mt-4">
-          <Button
-            asChild
-            className="bg-background text-foreground hover:bg-muted"
-          >
+          <Button asChild variant="ghost">
             <Link to="/login">Log In</Link>
           </Button>
 

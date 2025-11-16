@@ -9,6 +9,6 @@ public class SignupDetails implements AuthDetails{
     private String displayName;
     private String email;
     private String password;
-    private Integer age;
+    private Short age;
     private Integer weight;
 }

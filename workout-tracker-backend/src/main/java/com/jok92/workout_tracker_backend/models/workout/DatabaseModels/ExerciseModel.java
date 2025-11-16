@@ -14,18 +14,8 @@ public class ExerciseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "workout_id", nullable = false)
-    private Long workoutId;
-
-    @Column(name = "exercise_id", nullable = false)
-    private Integer exerciseId;
-
-    @Column(name = "set_number", nullable = false)
-    private Integer setNumber;
-
     @Column(nullable = false)
-    private Integer weight;
+    private String name;
 
-    @Column(nullable = false)
-    private Integer reps;
+    private String description;
 }

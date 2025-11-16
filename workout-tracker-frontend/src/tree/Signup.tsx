@@ -1,3 +1,4 @@
+import apiAxios from "@/api/axiosInterceptor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,10 +19,9 @@ const SignUp = () => {
 
   async function getStatus() {
     try {
-      const response = await axios.get<isAuthResponse>("/api/auth/status");
+      const response = await apiAxios.get<isAuthResponse>("/api/auth/status");
       if (response.data.isAuthenticated) {
         console.log("Already authenticated");
-        return;
         navigate("/dashboard");
       }
     } catch {
@@ -47,7 +47,7 @@ const SignUp = () => {
     };
 
     try {
-      const response = await axios.post(apiUrl, requestBody);
+      const response = await apiAxios.post(apiUrl, requestBody);
       console.log("Signup successful:", response.data);
       navigate("/dashboard");
     } catch (err) {

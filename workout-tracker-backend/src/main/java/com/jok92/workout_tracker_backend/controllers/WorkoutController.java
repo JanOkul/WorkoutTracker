@@ -1,12 +1,11 @@
 package com.jok92.workout_tracker_backend.controllers;
 
-import com.jok92.workout_tracker_backend.models.workout.Requests.NewExercise;
-import com.jok92.workout_tracker_backend.models.workout.Requests.UpdateExercise;
+import com.jok92.workout_tracker_backend.models.workout.Requests.NewSet;
+import com.jok92.workout_tracker_backend.models.workout.Requests.UpdateSet;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.DataGetResponse;
 import com.jok92.workout_tracker_backend.models.auth.CustomUserDetail;
-import com.jok92.workout_tracker_backend.models.workout.Requests.DeleteExercise;
-import com.jok92.workout_tracker_backend.models.workout.Requests.NewWorkouts;
-import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedExerciseModel;
+import com.jok92.workout_tracker_backend.models.workout.Requests.DeleteSet;
+import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedSetModel;
 import com.jok92.workout_tracker_backend.services.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/workout")
@@ -56,10 +54,10 @@ public class WorkoutController {
     @PostMapping("/{date}")
     @ResponseStatus(HttpStatus.CREATED)
     public
-    ResponseEntity<ScrubbedExerciseModel> addExercisesForDate(
+    ResponseEntity<ScrubbedSetModel> addExercisesForDate(
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetail principal,
-            @RequestBody NewExercise body) {
+            @RequestBody NewSet body) {
 
         return ResponseEntity
                 .created(URI.create("/"+date))
@@ -74,10 +72,10 @@ public class WorkoutController {
      * @return A JSON response with the modified exercise entry.
      */
     @PutMapping("/{date}")
-    public UpdateExercise changeExerciseForDate(
+    public UpdateSet changeExerciseForDate(
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetail principal,
-            @RequestBody UpdateExercise body) {
+            @RequestBody UpdateSet body) {
         System.out.println(body);
         return workoutService.changeExerciseForDate(principal.getId(), date, body);
     }
@@ -93,7 +91,7 @@ public class WorkoutController {
     public void deleteExerciseForDate(
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetail principal,
-            @RequestBody DeleteExercise body
+            @RequestBody DeleteSet body
             ) {
 
         workoutService.deleteExerciseForDate(principal.getId(), date, body);

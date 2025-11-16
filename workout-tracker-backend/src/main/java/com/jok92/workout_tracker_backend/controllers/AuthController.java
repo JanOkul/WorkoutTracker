@@ -4,6 +4,7 @@ import com.jok92.workout_tracker_backend.models.auth.*;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.UserModel;
 import com.jok92.workout_tracker_backend.services.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Value("${jwt.expiryMins}")
+    private int accessExpiryMins;
+
+    @Value("${refresh.expiryDays}")
+    private int refreshExpiryDays;
+
     @PostMapping("/signup")
     public UserModel signup(@RequestBody SignupDetails body) {
         return authService.signup(body);
@@ -30,13 +37,13 @@ public class AuthController {
         AccessRefreshPair tokenPair = authService.login(details);
         String accessToken = tokenPair.accessToken();
         UUID refreshToken = tokenPair.refreshToken();
-        System.out.println("helllooooooooooo");
+
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken.toString())
                 .httpOnly(true)
                 .secure(false)
                 .sameSite("Strict")
                 .path("/api/auth/")
-                .maxAge(Duration.ofDays(7))
+                .maxAge(Duration.ofDays(refreshExpiryDays))
                 .build();
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
@@ -44,7 +51,7 @@ public class AuthController {
                 .secure(false)
                 .sameSite("Strict")
                 .path("/api/")
-                .maxAge(Duration.ofDays(15))
+                .maxAge(Duration.ofMinutes(accessExpiryMins))
                 .build();
 
         return ResponseEntity.ok()
@@ -53,8 +60,32 @@ public class AuthController {
                 .body(new AccessTokenResponse(accessToken));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue("refreshToken") String refreshToken) {
+        authService.logout(refreshToken);
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/api/")
+                .maxAge(Duration.ZERO)
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/api/auth/")
+                .maxAge(Duration.ZERO)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString()).build();
+    }
+
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String cookie) {
+    public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken") String cookie) {
         AccessRefreshPair tokenPair = authService.refresh(UUID.fromString(cookie));
 
         String accessToken = tokenPair.accessToken();
@@ -63,17 +94,17 @@ public class AuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken.toString())
                 .httpOnly(false)
                 .secure(false)
-                .sameSite("None") //todo change
+                .sameSite("Strict") //todo change
                 .path("/api/auth/")
-                .maxAge(Duration.ofDays(7))
+                .maxAge(Duration.ofDays(refreshExpiryDays))
                 .build();
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                 .httpOnly(false)
                 .secure(false)
-                .sameSite("None")
+                .sameSite("Strict")
                 .path("/api/")
-                .maxAge(Duration.ofMinutes(15))
+                .maxAge(Duration.ofMinutes(accessExpiryMins))
                 .build();
 
         return ResponseEntity.ok()
@@ -83,8 +114,10 @@ public class AuthController {
     }
 
     @GetMapping("/status")
-    public StatusResponse status(@CookieValue("refreshToken") String cookie) {
-        System.out.println("HELLLOOOOOO");
+    public StatusResponse status(@CookieValue(value = "refreshToken", required = false) String cookie) {
+        if (cookie == null) {
+            return new StatusResponse(false);
+        }
         return new StatusResponse(authService.status(cookie));
     }
 

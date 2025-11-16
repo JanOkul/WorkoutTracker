@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupedExerciseSets {
-    Integer exerciseId;
-    List<ScrubbedExerciseModel> sets;
+public class GroupedSets {
+    Long exerciseId;
+    List<ScrubbedSetModel> sets;
 }

@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteExercise {
-    Integer exerciseId;
-    Integer setNumber;
+public class NewSet {
+    private Long exerciseId;
+    private Short setNumber;
+    private Integer weight;
+    private Short reps;
 }

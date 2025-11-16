@@ -1,0 +1,11 @@
+package com.jok92.workout_tracker_backend.exceptions;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class SetNotFoundException extends RuntimeException {
+    public SetNotFoundException() {
+        super("Set Not Found");
+    }
+}

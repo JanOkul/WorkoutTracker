@@ -47,4 +47,8 @@ public class RefreshService {
     public boolean refreshTokenExists(String refreshToken) {
         return redisService.exists(refreshToken);
     }
+
+    public void removeRefreshToken(String refreshToken) {
+        redisService.delete(refreshToken);
+    }
 }
