@@ -3,4 +3,4 @@
 .vscode
 .idea
 .mvn
-workout-tracker-backend/target/
+*/target/
