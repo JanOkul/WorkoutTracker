@@ -7,14 +7,12 @@ import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.UserModel
 import com.jok92.workout_tracker_backend.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,7 +29,7 @@ public class AuthService {
 
     @Autowired
     private RefreshService refreshService;
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+    final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     /**
      * @param user The user's sign up details sent by the client.

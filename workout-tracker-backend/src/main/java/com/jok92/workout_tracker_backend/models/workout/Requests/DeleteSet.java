@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeleteSet {
-    Integer exerciseId;
+    String exerciseId;
     Short setNumber;
 }

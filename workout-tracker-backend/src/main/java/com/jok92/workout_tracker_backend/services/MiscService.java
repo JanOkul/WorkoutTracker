@@ -4,7 +4,6 @@ import com.jok92.workout_tracker_backend.exceptions.UserNotFoundException;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.UserModel;
 import com.jok92.workout_tracker_backend.models.workout.Responses.misc.DisplayName;
 import com.jok92.workout_tracker_backend.repositories.UserRepo;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

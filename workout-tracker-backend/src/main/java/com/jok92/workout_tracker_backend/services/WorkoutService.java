@@ -3,6 +3,7 @@ package com.jok92.workout_tracker_backend.services;
 import com.jok92.workout_tracker_backend.exceptions.SetNotFoundException;
 import com.jok92.workout_tracker_backend.exceptions.WorkoutNotFoundException;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.SetModel;
+import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.UserModel;
 import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.WorkoutsModel;
 import com.jok92.workout_tracker_backend.models.workout.Requests.DeleteSet;
 import com.jok92.workout_tracker_backend.models.workout.Requests.NewSet;
@@ -10,11 +11,10 @@ import com.jok92.workout_tracker_backend.models.workout.Requests.UpdateSet;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.DataGetResponse;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.GroupedSets;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedSetModel;
+import com.jok92.workout_tracker_backend.repositories.ExerciseRepo;
 import com.jok92.workout_tracker_backend.repositories.SetRepo;
 import com.jok92.workout_tracker_backend.repositories.UserRepo;
 import com.jok92.workout_tracker_backend.repositories.WorkoutsRepo;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +33,8 @@ public class WorkoutService {
     SetRepo setRepo;
     @Autowired
     WorkoutsRepo workoutsRepo;
+    @Autowired
+    ExerciseRepo exerciseRepo;
 
 
     /**
@@ -72,12 +74,16 @@ public class WorkoutService {
 
         // Check if workout exists. If empty create new workout.
         WorkoutsModel workout = workoutsRepo.findByUserIdAndDateOfWorkout(userId, date)
-                .orElseGet(() -> workoutsRepo.save(new WorkoutsModel(null, userId, date)));
+                .orElseGet(() -> {
+                    UserModel user = userRepo.getReferenceById(userId);
+
+                    return workoutsRepo.save(new WorkoutsModel(null, user, date));
+                });
 
         SetModel setModel = new SetModel(
                                 null,
-                                workout.getId(),
-                                newSet.getExerciseId(),
+                                workoutsRepo.getReferenceById(workout.getId()),
+                                exerciseRepo.getReferenceById(newSet.getExerciseId()),
                                 newSet.getSetNumber(),
                                 newSet.getWeight(),
                                 newSet.getReps()
@@ -112,13 +118,13 @@ public class WorkoutService {
                 workout.getId(), updateSet.getExerciseId(), updateSet.getSetNumber())
                 .orElseThrow(SetNotFoundException::new);
 
-        set.setExerciseId(updateSet.getExerciseId());
+        set.setExercise(exerciseRepo.getReferenceById(updateSet.getExerciseId()));
         set.setSetNumber(updateSet.getSetNumber());
         set.setWeight(updateSet.getWeight());
         set.setReps(updateSet.getReps());
 
         return new UpdateSet(
-                set.getExerciseId(),
+                set.getExercise().getId(),
                 set.getSetNumber(),
                 set.getWeight(),
                 set.getReps()
@@ -162,19 +168,22 @@ public class WorkoutService {
     }
 
     static List<GroupedSets> groupExerciseSets(List<SetModel> setModels) {
-        Map<Long, List<SetModel>> groupedExerciseModels = setModels.stream()
-                .collect(Collectors.groupingBy(SetModel::getExerciseId));
+        Map<String, List<SetModel>> groupedExerciseModels = setModels.stream()
+                .collect(Collectors.groupingBy(setModel -> setModel.getExercise().getId()));
+
 
         List<GroupedSets> groupedSets = new ArrayList<>();
 
-        for (Map.Entry<Long, List<SetModel>> entry: groupedExerciseModels.entrySet()) {
-            Long exerciseId = entry.getKey();
+        for (Map.Entry<String, List<SetModel>> entry: groupedExerciseModels.entrySet()) {
+            String exerciseId = entry.getKey();
+
+
             List<ScrubbedSetModel> sets = entry.getValue().stream()
                     .map(ScrubbedSetModel::fromExerciseModel).toList();
 
             groupedSets.add(new GroupedSets(exerciseId, sets));
         }
-        System.out.println(groupedSets);
+
         return groupedSets;
     }
 }

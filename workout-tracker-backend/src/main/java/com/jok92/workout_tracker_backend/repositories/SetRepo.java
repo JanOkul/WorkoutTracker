@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface SetRepo extends JpaRepository<SetModel, Long> {
 
     List<SetModel> findAllByWorkoutId(Long workoutId);
-    Optional<SetModel> findByWorkoutIdAndExerciseIdAndSetNumber(Long workoutId, Long exerciseId, Short setNumber);
+    Optional<SetModel> findByWorkoutIdAndExerciseIdAndSetNumber(Long workoutId, String exerciseId, Short setNumber);
     void deleteByWorkoutIdAndSetNumber(Long workoutId, Short setNumber);
     Long countByWorkoutId(Long workoutId);
 }

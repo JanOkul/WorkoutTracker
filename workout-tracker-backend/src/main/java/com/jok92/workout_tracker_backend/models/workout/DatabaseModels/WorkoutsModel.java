@@ -1,6 +1,6 @@
 package com.jok92.workout_tracker_backend.models.workout.DatabaseModels;
 import java.time.LocalDate;
-import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,8 +15,9 @@ public class WorkoutsModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserModel user;
 
     @Column(name = "date_of_workout", nullable = false)
     private LocalDate dateOfWorkout;

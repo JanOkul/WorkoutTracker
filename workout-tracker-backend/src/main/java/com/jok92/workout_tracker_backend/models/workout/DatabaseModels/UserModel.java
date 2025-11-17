@@ -2,7 +2,6 @@ package com.jok92.workout_tracker_backend.models.workout.DatabaseModels;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;

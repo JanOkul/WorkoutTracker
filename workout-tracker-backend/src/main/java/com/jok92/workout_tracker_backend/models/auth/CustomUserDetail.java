@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class CustomUserDetail implements UserDetails {
 
-    private UserModel user;
+    private final UserModel user;
 
     public CustomUserDetail(UserModel user) {
         this.user = user;

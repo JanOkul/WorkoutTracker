@@ -11,34 +11,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { capitalizeWords } from "@/global/utils";
 import { Check, Trash } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTodayDate } from "../Dashboard";
-
-interface Set {
-  setNumber: number;
-  weight: number;
-  reps: number;
-}
-
-interface Exercise {
-  exerciseId: number;
-  sets: Set[];
-}
-
-interface Workout {
-  dateOfWorkout: string;
-  exercises: Exercise[];
-}
-
-const updateTag = "UPDATE";
-const deleteTag = "DELETE";
+import {
+  deleteTag,
+  formatDate,
+  updateTag,
+  type Exercise,
+  type Set,
+  type Workout,
+} from "./LogUtils";
 
 const Log = () => {
   const params = useParams();
   const { date } = params;
-  const today = getTodayDate();
   const dateApiUrl = `/api/workout/${date}`;
   const navigate = useNavigate();
   const [workout, setWorkout] = useState<Workout>({
@@ -49,7 +37,7 @@ const Log = () => {
   async function loadWorkout() {
     try {
       const response = await apiAxios.get(dateApiUrl);
-
+      console.log(response.data);
       setWorkout(response.data);
     } catch (e) {
       console.log("Error fetching workout" + e);
@@ -57,7 +45,7 @@ const Log = () => {
     }
   }
 
-  async function addSet(exerciseId: number) {
+  async function addSet(exerciseId: string) {
     const targetExercise = workout.exercises.find(
       (ex) => ex.exerciseId === exerciseId
     );
@@ -97,7 +85,7 @@ const Log = () => {
   }
 
   function updateSet(
-    exerciseId: number | null,
+    exerciseId: string | null,
     setNumber: number,
     weight: number,
     reps: number
@@ -121,7 +109,7 @@ const Log = () => {
     });
   }
 
-  function deleteSet(exerciseId: number, setNumber: number) {
+  function deleteSet(exerciseId: string, setNumber: number) {
     setWorkout((prev) => {
       if (!prev) return prev;
 
@@ -151,64 +139,64 @@ const Log = () => {
 
     if (method === updateTag) {
       const body = {
-        exerciseId: Number(formData.get("exerciseId")),
+        exerciseId: String(formData.get("exerciseId")),
         setNumber: Number(formData.get("setNumber")),
         weight: Number(formData.get("weight")),
         reps: Number(formData.get("reps")),
       };
 
-      const response = await apiAxios.put(dateApiUrl, body);
+      await apiAxios.put(dateApiUrl, body);
 
       updateSet(body.exerciseId, body.setNumber, body.weight, body.reps);
     }
 
     if (method === deleteTag) {
       const body = {
-        exerciseId: Number(formData.get("exerciseId")),
+        exerciseId: String(formData.get("exerciseId")),
         setNumber: Number(formData.get("setNumber")),
       };
-      const response = await apiAxios.delete(dateApiUrl, {
+
+      await apiAxios.delete(dateApiUrl, {
         data: body,
       });
 
-      console.log(response.status);
       deleteSet(body.exerciseId, body.setNumber);
     }
   }
 
+  // Creates a new Exercise entry into the current workout
   function createExercise(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const name = formData.get("name")?.toString();
+    const name = formData.get("name")?.toString().toLowerCase();
 
     if (!name) {
       return;
     }
 
-    setWorkout((prev) => {
-      const newId = parseInt(name, 10);
-
-      if (isNaN(newId) || newId <= 0) {
+    setWorkout((prev: Workout) => {
+      if (name.length === 0) {
+        //todo add exerciselist comparison
         console.error("Invalid Exercise ID provided.");
         alert("Please enter a valid, positive number for the Exercise ID.");
         return prev;
       }
 
       const idAlreadyExists = prev.exercises.some(
-        (ex) => ex.exerciseId === newId
+        (ex) => ex.exerciseId === name
       );
 
       if (idAlreadyExists) {
-        console.error(`Exercise ID ${newId} already exists.`);
+        console.error(`Exercise Name ${name} already exists.`);
         alert(
-          `Exercise ID ${newId} is already present. Please use a unique ID.`
+          `Exercise ID ${name} is already present. Please use a unique name.`
         );
         return prev;
       }
 
       const newExercise = {
-        exerciseId: newId,
+        exerciseId: name,
         sets: [],
       };
 
@@ -224,18 +212,10 @@ const Log = () => {
   }, [date]);
 
   function createWorkout(workout: Workout) {
-    const date = new Date(workout.dateOfWorkout);
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    } as const;
-
     return (
       <div className="border-2 rounded-lg p-2 pb-4 pt-4">
         <h2 className="text-center">
-          {date.toLocaleDateString("en-US", options)}
+          {formatDate(new Date(workout.dateOfWorkout))}
         </h2>
 
         {/* For each exercise in the workout*/}
@@ -243,7 +223,7 @@ const Log = () => {
           {workout.exercises.length > 0 ? (
             workout.exercises.map((ex) => (
               <div key={ex.exerciseId} className="m-4">
-                <h3 className="mb-2">Exercise: {ex.exerciseId}</h3>
+                <h3 className="mb-2">{capitalizeWords(ex.exerciseId)}</h3>
 
                 {/* For each set in an exercise*/}
                 <div className="flex space-x-3">
@@ -253,7 +233,9 @@ const Log = () => {
                   <Button onClick={() => {}} className="opacity-0 h-7" />
                   <Button onClick={() => {}} className="opacity-0 h-7 mr-0.5" />
                 </div>
-                {ex.sets.map((set) => createExerciseForm(ex, set))}
+                {ex.sets
+                  .sort((a: Set, b: Set) => a.setNumber - b.setNumber)
+                  .map((set) => createExerciseForm(ex, set))}
                 <Button onClick={() => addSet(ex.exerciseId)} className="mt-2">
                   New Set
                 </Button>

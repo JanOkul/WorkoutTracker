@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateSet {
-    private Long exerciseId;
+    private String exerciseId;
     private Short setNumber;
     private Integer weight;
     private Short reps;

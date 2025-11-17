@@ -24,12 +24,17 @@ CREATE TABLE IF NOT EXISTS workouts (
 	CONSTRAINT one_workout_per_day_per_user 
 		UNIQUE(user_id, date_of_workout)
 );
+
+CREATE TABLE IF NOT EXISTS exercises (
+	id varchar(40) NOT NULL PRIMARY KEY,
+	description varchar(200)
+);
 	
 CREATE TABLE IF NOT EXISTS sets (
 	-- Admin content
 	id BIGSERIAL PRIMARY KEY,
 	workout_id BIGINT NOT NULL,
-	exercise_id BIGSERIAL NOT NULL,
+	exercise_id varchar(40) NOT NULL,
 	-- Fitness content
 	set_number int2 NOT NULL,
 	weight int4,
@@ -51,10 +56,6 @@ CREATE TABLE IF NOT EXISTS sets (
 		
 );
 
-CREATE TABLE IF NOT EXISTS exercises (
-	id BIGSERIAL PRIMARY KEY,
-	name varchar(40) NOT NULL,
-	description varchar(200)
-);
+
 
 	

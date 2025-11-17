@@ -11,11 +11,7 @@ import lombok.*;
 public class ExerciseModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String name;
+    private String id;
 
     private String description;
 }

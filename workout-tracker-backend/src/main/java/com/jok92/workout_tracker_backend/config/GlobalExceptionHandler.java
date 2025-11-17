@@ -39,13 +39,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleEntityNotFound(EntityNotFoundException e) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-/*        HttpStatus status = HttpStatus.NOT_FOUND;
-        System.out.println("hi");
-        return ResponseEntity.status(status).body(
-                ExceptionResponse.builder()
-                        .status(status)
-                        .error(e.getMessage())
-                        .build()
-        );
-    }*/
 }

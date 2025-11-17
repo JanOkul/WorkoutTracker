@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupedSets {
-    Long exerciseId;
+    String exerciseId;
+
     List<ScrubbedSetModel> sets;
 }

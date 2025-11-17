@@ -14,11 +14,13 @@ public class SetModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "workout_id", nullable = false)
-    private Long workoutId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workout_id", nullable = false)
+    private WorkoutsModel workout;
 
-    @Column(name = "exercise_id")
-    private Long exerciseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exercise_id")
+    private ExerciseModel exercise;
 
     @Column(name = "set_number", nullable = false)
     private Short setNumber;
@@ -28,10 +30,4 @@ public class SetModel {
 
     @Column(nullable = false)
     private Short reps;
-
-  /*  public SetModel createSetModel(Long id, Long workoutId, Long workoutId, Integer setNumber, Integer weight, Integer reps) {
-        return new SetModel(
-
-        )
-    }*/
 }
