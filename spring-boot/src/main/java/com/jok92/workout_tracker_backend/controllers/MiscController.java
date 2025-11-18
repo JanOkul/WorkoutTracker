@@ -2,6 +2,7 @@ package com.jok92.workout_tracker_backend.controllers;
 
 import com.jok92.workout_tracker_backend.models.auth.CustomUserDetail;
 import com.jok92.workout_tracker_backend.models.workout.Responses.misc.DisplayName;
+import com.jok92.workout_tracker_backend.models.workout.Responses.misc.GetExList;
 import com.jok92.workout_tracker_backend.services.MiscService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,8 +18,11 @@ public class MiscController {
 
     @GetMapping("/get-display-name")
     public DisplayName getDisplayName(@AuthenticationPrincipal CustomUserDetail principal) {
-        System.out.println("misc controller");
-        System.out.println(principal.getId());
         return miscService.getDisplayName(principal.getId());
+    }
+
+    @GetMapping("get-exercise-list")
+    public GetExList getExList() {
+        return miscService.getExList();
     }
 }

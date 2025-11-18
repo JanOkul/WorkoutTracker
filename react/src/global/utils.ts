@@ -12,3 +12,12 @@ export const capitalizeWords = (s: string): string => {
     })
     .join(" ");
 };
+
+export interface exercise {
+  id: string;
+  description: string;
+}
+
+export interface exerciselist {
+  exercises: exercise[];
+}

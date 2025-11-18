@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
+import ErrorPage from "./global/ErrorPage.tsx";
 import "./index.css";
 import Home from "./tree/Home.tsx";
 import Login from "./tree/Login.tsx";
@@ -13,6 +14,7 @@ import Log from "./tree/dashboard/log/Log.tsx";
 export const mainRouter = createBrowserRouter([
   {
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",

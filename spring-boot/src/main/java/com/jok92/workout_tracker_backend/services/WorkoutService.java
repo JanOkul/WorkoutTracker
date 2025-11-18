@@ -76,8 +76,9 @@ public class WorkoutService {
         WorkoutsModel workout = workoutsRepo.findByUserIdAndDateOfWorkout(userId, date)
                 .orElseGet(() -> {
                     UserModel user = userRepo.getReferenceById(userId);
-
-                    return workoutsRepo.save(new WorkoutsModel(null, user, date));
+                    WorkoutsModel newWorkout = new WorkoutsModel(null, user, date);
+                    System.out.println(newWorkout.getId());
+                    return workoutsRepo.save(newWorkout);
                 });
 
         SetModel setModel = new SetModel(
@@ -88,6 +89,7 @@ public class WorkoutService {
                                 newSet.getWeight(),
                                 newSet.getReps()
         );
+
 
         SetModel dbResponse = setRepo.save(setModel);
 
