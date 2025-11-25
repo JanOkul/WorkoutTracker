@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { exercise } from "@/global/utils";
+import { useExerciseList } from "@/global/ExerciseListContext";
 import { useState } from "react";
 import { createExercise, type Workout } from "../LogUtils";
 import ExerciseSelect from "./ExerciseSelect";
@@ -19,9 +19,7 @@ interface newWorkoutProp {
 }
 
 const NewWorkout = ({ setWorkout }: newWorkoutProp) => {
-  const exerciseList = JSON.parse(
-    sessionStorage.getItem("exercises") || ""
-  ) as exercise[];
+  const { items } = useExerciseList();
 
   const [comboBoxValue, setComboBoxValue] = useState("");
 
@@ -42,9 +40,9 @@ const NewWorkout = ({ setWorkout }: newWorkoutProp) => {
             </DialogDescription>
           </DialogHeader>
           <ExerciseSelect
-            exercises={exerciseList}
+            exercises={items}
             value={comboBoxValue}
-            onChange={setComboBoxValue}
+            setValue={setComboBoxValue}
           />
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild className="mt-4">

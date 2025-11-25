@@ -1,7 +1,6 @@
 "use client";
 
 import { Check, ChevronsUpDown } from "lucide-react";
-import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,19 +18,20 @@ import {
 } from "@/components/ui/popover";
 import { capitalizeWords, type exercise } from "@/global/utils";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface ExerciseSelectProps {
   exercises: exercise[];
   value: string;
-  onChange: (value: string) => void;
+  setValue: (value: string) => void;
 }
 
 export const ExerciseSelect = ({
   exercises,
   value,
-  onChange,
+  setValue,
 }: ExerciseSelectProps) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -40,7 +40,7 @@ export const ExerciseSelect = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between" // full width
+          className="w-full justify-between"
         >
           {value
             ? capitalizeWords(exercises.find((ex) => ex.id === value)?.id || "")
@@ -60,7 +60,7 @@ export const ExerciseSelect = ({
                   key={ex.id}
                   value={ex.id}
                   onSelect={(currentValue) => {
-                    onChange(currentValue === value ? "" : currentValue);
+                    setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
                 >

@@ -37,7 +37,7 @@ const Log = () => {
   }, [date]);
 
   return (
-    <div className="max-w-xl mx-auto p-4 sm:p-6">
+    <div className="max-w-xl mx-auto p-2">
       <WorkoutForm setWorkout={setWorkout} date={date} workout={workout} />
     </div>
   );

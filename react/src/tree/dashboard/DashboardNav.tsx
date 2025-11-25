@@ -9,55 +9,52 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useExerciseList } from "@/global/ExerciseListContext";
 import { Link, useNavigate } from "react-router-dom";
+import DashboardNavExercise from "./DashboardNavExercise";
 
 const DashboardNav = () => {
   const navigate = useNavigate();
+  const { items } = useExerciseList();
 
   return (
-    <div>
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link to="/dashboard"> Home </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+    <NavigationMenu>
+      <NavigationMenuList className="flex list-none">
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link to="/dashboard"> Home </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
 
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Log</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <Calendar
-                mode="single"
-                onSelect={(date) => {
-                  if (!date) return;
-                  const month = date.getMonth() + 1;
-                  const day = date.getDate();
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Log</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <Calendar
+              mode="single"
+              onSelect={(date) => {
+                if (!date) return;
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
 
-                  const formattedMonth = String(month).padStart(2, "0");
-                  const formattedDay = String(day).padStart(2, "0");
-                  const url = `/dashboard/log/${date?.getFullYear()}-${formattedMonth}-${formattedDay}`;
+                const formattedMonth = String(month).padStart(2, "0");
+                const formattedDay = String(day).padStart(2, "0");
+                const url = `/dashboard/log/${date?.getFullYear()}-${formattedMonth}-${formattedDay}`;
 
-                  navigate(url);
-                }}
-                disabled={{ after: new Date() }}
-                className="rounded-lg border "
-              />
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-    </div>
-    // <div>
-    //     <nav>
-    //         <Link to="/dashboard">Dashboard</Link>
-    //         <Link to={todayLog}>Log</Link>
-    //         <Link to="">Exercises</Link>
-    //     </nav>
-    // </div>
+                navigate(url);
+              }}
+              disabled={{ after: new Date() }}
+            />
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Exercises</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <DashboardNavExercise exercises={items} />
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
 

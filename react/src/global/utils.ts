@@ -1,5 +1,4 @@
 export const capitalizeWords = (s: string): string => {
-  console.log("String to format: " + s);
   if (!s || s.trim().length === 0) {
     return s;
   }

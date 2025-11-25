@@ -1,10 +1,10 @@
 package com.jok92.workout_tracker_backend.controllers;
 
-import com.jok92.workout_tracker_backend.models.workout.Requests.NewSet;
-import com.jok92.workout_tracker_backend.models.workout.Requests.UpdateSet;
+import com.jok92.workout_tracker_backend.models.workout.Requests.workout.NewSet;
+import com.jok92.workout_tracker_backend.models.workout.Requests.workout.UpdateSet;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.DataGetResponse;
 import com.jok92.workout_tracker_backend.models.auth.CustomUserDetail;
-import com.jok92.workout_tracker_backend.models.workout.Requests.DeleteSet;
+import com.jok92.workout_tracker_backend.models.workout.Requests.workout.DeleteSet;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedSetModel;
 import com.jok92.workout_tracker_backend.services.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;

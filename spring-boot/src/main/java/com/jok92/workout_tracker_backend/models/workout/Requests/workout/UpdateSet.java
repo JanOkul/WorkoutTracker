@@ -1,4 +1,4 @@
-package com.jok92.workout_tracker_backend.models.workout.Requests;
+package com.jok92.workout_tracker_backend.models.workout.Requests.workout;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

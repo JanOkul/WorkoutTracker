@@ -10,7 +10,7 @@ import {
   updateSet,
   updateTag,
   type Exercise,
-  type Set,
+  type SingleSet,
   type Workout,
 } from "../LogUtils";
 
@@ -18,7 +18,7 @@ interface exerciseFormProp {
   setWorkout: React.Dispatch<React.SetStateAction<Workout>>;
   date: string;
   ex: Exercise;
-  set: Set;
+  set: SingleSet;
 }
 
 const ExerciseForm = ({ setWorkout, date, ex, set }: exerciseFormProp) => {

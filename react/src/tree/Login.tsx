@@ -58,6 +58,7 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (err) {
+      console.log(err);
       setLoginFailed(true);
     }
   }

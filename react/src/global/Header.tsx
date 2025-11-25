@@ -25,7 +25,7 @@ function Header() {
   );
   return (
     <header className="flex p-3">
-      <Link to="/" className="w-fit">
+      <Link to={isDashboard ? "/dashboard" : "/"} className="w-fit">
         <h2 className="m">Workout Tracker</h2>
       </Link>
       <div className="ml-auto">{loginOrLogout}</div>

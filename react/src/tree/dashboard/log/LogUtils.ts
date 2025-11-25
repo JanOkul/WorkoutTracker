@@ -1,7 +1,7 @@
 export const updateTag = "UPDATE";
 export const deleteTag = "DELETE";
 
-export interface Set {
+export interface SingleSet {
   setNumber: number;
   weight: number;
   reps: number;
@@ -9,7 +9,7 @@ export interface Set {
 
 export interface Exercise {
   exerciseId: string;
-  sets: Set[];
+  sets: SingleSet[];
 }
 
 export interface Workout {
@@ -62,14 +62,18 @@ export function deleteSet(
 
     return {
       ...prev,
-      exercises: prev.exercises.map((exercise) =>
-        exercise.exerciseId === exerciseId
-          ? {
-              ...exercise,
-              sets: exercise.sets.filter((set) => set.setNumber !== setNumber),
-            }
-          : exercise
-      ),
+      exercises: prev.exercises
+        .map((exercise) =>
+          exercise.exerciseId === exerciseId
+            ? {
+                ...exercise,
+                sets: exercise.sets.filter(
+                  (set) => set.setNumber !== setNumber
+                ),
+              }
+            : exercise
+        )
+        .filter((exercise) => exercise.sets.length > 0),
     };
   });
 }
@@ -97,6 +101,7 @@ export function createExercise(
 
     if (idAlreadyExists) {
       console.error(`Exercise Name ${name} already exists.`);
+
       alert(
         `Exercise ID ${name} is already present. Please use a unique name.`
       );

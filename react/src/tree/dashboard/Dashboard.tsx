@@ -1,4 +1,5 @@
 import apiAxios from "@/api/axiosInterceptor";
+import { useExerciseList } from "@/global/ExerciseListContext";
 import { type exerciselist } from "@/global/utils";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -6,6 +7,7 @@ import type { isAuthResponse } from "../Login";
 import DashboardNav from "./DashboardNav";
 
 const Dashboard = () => {
+  const { setItems } = useExerciseList();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,10 +34,7 @@ const Dashboard = () => {
       const response = await apiAxios.get<exerciselist>(
         "/api/misc/get-exercise-list"
       );
-      sessionStorage.setItem(
-        "exercises",
-        JSON.stringify(response.data.exercises)
-      );
+      setItems(response.data.exercises);
     } catch (err) {
       console.log("Unable to fetch exercise list");
       navigate("/error");
@@ -52,7 +51,9 @@ const Dashboard = () => {
 
   return (
     <>
-      <DashboardNav />
+      <div>
+        <DashboardNav />
+      </div>
       <Outlet />
     </>
   );
