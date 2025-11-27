@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div>
+      <div className="flex justify-center lg:justify-start w-full lg:ml-2">
         <DashboardNav />
       </div>
       <Outlet />

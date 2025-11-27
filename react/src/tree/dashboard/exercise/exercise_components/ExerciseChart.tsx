@@ -1,4 +1,5 @@
 import {
+  CartesianGrid,
   Legend,
   Line,
   LineChart,
@@ -20,11 +21,21 @@ interface dataProp {
 
 const ExerciseChart = ({ data }: dataProp) => {
   return (
-    <ResponsiveContainer width="100%" height={450} className="mt-4">
-      <LineChart data={data} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+    <ResponsiveContainer
+      width="100%"
+      minHeight={200}
+      height="100%"
+      className="mt-4"
+    >
+      <LineChart
+        data={data}
+        margin={{ top: 5, right: 0, left: -10, bottom: 5 }}
+      >
+        <CartesianGrid />
         <XAxis
           dataKey="date"
           type="number"
+          padding={{ left: 0, right: 5 }}
           tickFormatter={(value) => {
             const date = new Date(value);
             return date.toLocaleDateString("en-US", {
@@ -32,26 +43,13 @@ const ExerciseChart = ({ data }: dataProp) => {
               day: "numeric",
             });
           }}
-          domain={["data-min", "data-max"]}
-          padding={{ left: 10, right: 10 }}
-          label={{
-            value: "Date Of Workout",
-            offset: 10,
-            position: "bottom",
-          }}
+          domain={["date-min", "date-max"]}
         />
 
-        <YAxis
-          label={{
-            value: "Weight (kg)",
-            angle: -90,
-            offset: -10,
-            position: "left",
-          }}
-        />
+        <YAxis unit="kg" />
 
-        <Line dataKey="avg" stroke="#3B82F6" />
-        <Line dataKey="max" stroke="#FB923C" />
+        <Line type="monotone" dataKey="avg" stroke="#3B82F6" />
+        <Line type="monotone" dataKey="max" stroke="#FB923C" />
         <Tooltip
           formatter={(value, name) => [
             (value as number).toFixed(2),

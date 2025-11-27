@@ -47,7 +47,7 @@ const ExercisePage = () => {
   const exerciseAggrData = aggregateExerciseData(exerciseRawData, startDate);
 
   return (
-    <div className="w-full max-w-3xl mx-auto h-fit mt-4">
+    <div className="w-full max-w-3xl mx-auto h-full mt-4 mb-4 p-1">
       {fromLogsPage ? (
         <div className="ml-1">
           <Button onClick={() => navigate(-1)} className="mb-4">
@@ -59,13 +59,13 @@ const ExercisePage = () => {
         <></>
       )}
 
-      <div className="border-2 rounded-lg pb-4 pt-4  p-4 sm:p-6 ">
+      <div className="h-full border-2 rounded-lg pb-4 pt-4 p-4 sm:p-6 flex flex-col">
         <div>
           <h2>{capitalizeWords(exercise.id)}</h2>
           <p>{exercise.description}</p>
         </div>
 
-        <div className="mt-4 lg:mt-6  ">
+        <div className="flex-1 flex flex-col mt-4 lg:mt-6">
           <h3>One-Rep Max Progress (Last {startDate} Days)</h3>
 
           <div className="flex m-2 ml-0 items-center">

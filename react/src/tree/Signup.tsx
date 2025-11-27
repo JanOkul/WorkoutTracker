@@ -43,7 +43,7 @@ const SignUp = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center h-full">
+    <div className="flex flex-col justify-center items-center h-full p-1">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>
