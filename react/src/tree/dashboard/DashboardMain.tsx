@@ -1,13 +1,10 @@
 import apiAxios from "@/api/axiosInterceptor";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Tile from "../../global/Tile";
 import { getTodayDate } from "./Dashboard";
+import Log from "./log/Log";
 
 const DashboardMain = () => {
   const [greeting, setGreeting] = useState("");
-  const workoutTodayLink = `/dashboard/log/${getTodayDate()}`;
 
   /**
    * Generate a greeting message to the user.
@@ -61,9 +58,8 @@ const DashboardMain = () => {
     try {
       const response = await apiAxios.get(apiUrl);
       displayName = response.data.displayName;
-      console.log(displayName);
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
 
     return displayName;
@@ -79,22 +75,13 @@ const DashboardMain = () => {
   }, []);
 
   return (
-    <div className="m-4 flex flex-col flex-1 min-h-20">
+    <div className="m-4 flex flex-col items-center  min-h-20">
       <div className="mt-4 mb-4">
         <h2 className="text-center m-4">{greeting}</h2>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 flex-1">
-        <Tile>
-          <h3 className="text-center"> Today's Workout</h3>
-          <Button asChild className="m-4">
-            <Link to={workoutTodayLink}>Add</Link>
-          </Button>
-        </Tile>
-        <Tile>
-          <h3> Today's Workout</h3>
-          <Link to={workoutTodayLink}>Add</Link>
-        </Tile>
+      <div className="flex md:flex-row flex-col gap-4">
+        <Log dateProp={getTodayDate()} />
       </div>
     </div>
   );

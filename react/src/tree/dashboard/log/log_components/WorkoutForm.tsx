@@ -63,7 +63,6 @@ const WorkoutForm = ({ date, setWorkout, workout }: workoutProp) => {
         weight: 0,
         reps: 0,
       });
-      console.log("Created set:", response.status);
     } catch (err) {
       console.error("Failed to add new set:", err);
       deleteSet(setWorkout, exerciseId, newSetNumber);

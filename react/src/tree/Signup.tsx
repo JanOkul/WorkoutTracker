@@ -10,28 +10,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-import { useEffect, type FormEvent } from "react";
+import { type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import type { isAuthResponse } from "./Login";
 
 const SignUp = () => {
   const navigate = useNavigate();
-
-  async function getStatus() {
-    try {
-      const response = await apiAxios.get<isAuthResponse>("/api/auth/status");
-      if (response.data.isAuthenticated) {
-        console.log("Already authenticated");
-        navigate("/dashboard");
-      }
-    } catch {
-      console.log("Unable to check if user is already authenticated");
-    }
-  }
-
-  useEffect(() => {
-    getStatus();
-  }, []);
 
   async function signupAction(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -47,8 +30,7 @@ const SignUp = () => {
     };
 
     try {
-      const response = await apiAxios.post(apiUrl, requestBody);
-      console.log("Signup successful:", response.data);
+      await apiAxios.post(apiUrl, requestBody);
       navigate("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {

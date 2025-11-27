@@ -5,14 +5,14 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import ExerciseChart from "./ExerciseChart";
+import ExerciseChart from "./exercise_components/ExerciseChart";
+import OneRepMaxInfo from "./exercise_components/OneRepMaxInfo";
+import StartDateSelection from "./exercise_components/StartDateSelection";
 import {
   aggregateExerciseData,
   getExerciseData,
   type workoutEntryDate,
 } from "./ExerciseUtils";
-import OneRepMaxInfo from "./OneRepMaxInfo";
-import StartDateSelection from "./StartDateSelection";
 
 const ExercisePage = () => {
   const [exerciseRawData, setExerciseRawData] = useState<workoutEntryDate[]>(

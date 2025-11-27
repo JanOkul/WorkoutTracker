@@ -18,7 +18,7 @@ interface DashboardNavExerciseProp {
 
 const DashboardNavExercise = ({ exercises }: DashboardNavExerciseProp) => {
   const navigate = useNavigate();
-  const [value, setValue] = useState("");
+  const value = useState("")[0];
 
   return (
     <Command className=" w-[200px]">

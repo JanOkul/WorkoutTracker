@@ -14,12 +14,6 @@ const authAxios = axios.create({
 //infinite loop
 apiAxios.interceptors.response.use(
   (response) => {
-    // If response is successful, just return it
-    console.log(
-      "Successfull response from ",
-      response.config.baseURL,
-      response.status
-    );
     return response;
   },
   async (error) => {
@@ -44,11 +38,6 @@ apiAxios.interceptors.response.use(
     // Check if error is 403 and we haven't already retried
     if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true; // Prevent infinite loop
-      console.log(
-        "Successfull response from ",
-        error.config.baseURL,
-        error.status
-      );
       try {
         // Step 1: Check authentication status
         const statusResponse = await authAxios.get<isAuthResponse>(
@@ -62,14 +51,12 @@ apiAxios.interceptors.response.use(
           // Step 3: Retry the original request
           return authAxios(originalRequest);
         } else {
-          // Not authenticated, redirect to login
-          window.location.href = "/login";
           return Promise.reject(error);
         }
       } catch (refreshError) {
         // If refresh fails, redirect to login
         console.error("Token refresh failed:", refreshError);
-        window.location.href = "/login";
+
         return Promise.reject(refreshError);
       }
     }

@@ -5,7 +5,7 @@ function Home() {
     <div className="flex flex-col justify-center items-center h-full">
       <div>
         <h2 className="text-2xl font-semibold text-center">
-          Put some interesting sounding text here
+          A workout tracker that doesn’t track you
         </h2>
       </div>
 

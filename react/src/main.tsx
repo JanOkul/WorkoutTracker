@@ -4,6 +4,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
 import ErrorPage from "./global/ErrorPage.tsx";
 import { ExerciseListProvider } from "./global/ExerciseListContext.tsx";
+import ProtectedRoute from "./global/route_redirection/ProtectedRoute.tsx";
+import UnprotectedRoute from "./global/route_redirection/UnprotectedRoute.tsx";
 import "./index.css";
 import Home from "./tree/Home.tsx";
 import Login from "./tree/Login.tsx";
@@ -20,22 +22,51 @@ export const mainRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <UnprotectedRoute
+            redirectPath="/dashboard"
+            message="Already signed in."
+          >
+            <Home />
+          </UnprotectedRoute>
+        ),
       },
 
       {
         path: "/login",
-        element: <Login />,
+        element: (
+          <UnprotectedRoute
+            redirectPath="/dashboard"
+            message="Already signed in."
+          >
+            <Login />
+          </UnprotectedRoute>
+        ),
       },
 
       {
         path: "/signup",
-        element: <SignUp />,
+        element: (
+          <UnprotectedRoute
+            redirectPath="/dashboard"
+            message="Already signed in."
+          >
+            <SignUp />
+          </UnprotectedRoute>
+        ),
       },
 
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute
+            redirectPath="/login"
+            message="Please login to access this page."
+          >
+            {" "}
+            <Dashboard />
+          </ProtectedRoute>
+        ),
         children: [
           {
             index: true,
@@ -44,7 +75,7 @@ export const mainRouter = createBrowserRouter([
 
           {
             path: "log/:date",
-            element: <Log />,
+            element: <Log dateProp={undefined} />,
           },
 
           {

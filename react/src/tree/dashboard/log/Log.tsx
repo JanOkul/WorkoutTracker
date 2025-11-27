@@ -6,14 +6,21 @@ import WorkoutForm from "./log_components/WorkoutForm";
 
 export const logUrl = "/api/workout/";
 
-const Log = () => {
+const Log = ({ dateProp }: { dateProp: string | undefined }) => {
   const params = useParams();
-  const { date } = params;
+
+  const date = params.date ? params.date : dateProp;
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!date) {
+      return;
+    }
+    loadWorkout();
+  }, [date]);
+
   if (!date) {
-    navigate("/error", { state: { message: "No date provided" } });
-    return; // To stop error in WorkoutForm
+    return;
   }
 
   const dateApiUrl = `${logUrl}${date}`;
@@ -31,10 +38,6 @@ const Log = () => {
       navigate("/error");
     }
   }
-
-  useEffect(() => {
-    loadWorkout();
-  }, [date]);
 
   return (
     <div className="max-w-xl mx-auto p-2">

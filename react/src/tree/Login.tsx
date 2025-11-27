@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircleIcon } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 export interface isAuthResponse {
   isAuthenticated: boolean;
@@ -22,22 +22,6 @@ export interface isAuthResponse {
 const Login = () => {
   const navigate = useNavigate();
   const [loginFailed, setLoginFailed] = useState(false);
-
-  async function getStatus() {
-    try {
-      const response = await apiAxios.get<isAuthResponse>("/api/auth/status");
-      if (response.data.isAuthenticated) {
-        console.log("Already authenticated");
-        navigate("/dashboard");
-      }
-    } catch {
-      console.log("Unable to check if user is already authenticated");
-    }
-  }
-
-  useEffect(() => {
-    getStatus();
-  }, []);
 
   async function loginAction(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,10 +35,7 @@ const Login = () => {
     };
 
     try {
-      const response = await apiAxios.post(apiUrl, requestBody);
-
-      const accessToken = response.data.accessToken;
-      console.log("Login successful. Access Token:", accessToken);
+      await apiAxios.post(apiUrl, requestBody);
 
       navigate("/dashboard");
     } catch (err) {
