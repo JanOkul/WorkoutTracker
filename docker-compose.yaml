@@ -19,12 +19,17 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    
+    
   redis:
     build: ./redis
     container_name: workout-tracker-redis
+    volumes:
+      - redis-data:/data
     networks:
       - app-network
     restart: unless-stopped
+    
     
   backend:
     build:
@@ -56,6 +61,8 @@ volumes:
   postgres-data:
     driver: local
   backend-data:
+    driver: local
+  redis-data:
     driver: local
 networks:
   app-network:
