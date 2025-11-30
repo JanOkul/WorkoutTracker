@@ -2,7 +2,6 @@ package com.jok92.workout_tracker_backend.services.auth;
 
 import com.jok92.workout_tracker_backend.models.auth.AccessRefreshPair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

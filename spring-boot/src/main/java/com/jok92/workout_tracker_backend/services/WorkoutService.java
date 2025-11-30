@@ -77,7 +77,6 @@ public class WorkoutService {
                 .orElseGet(() -> {
                     UserModel user = userRepo.getReferenceById(userId);
                     WorkoutsModel newWorkout = new WorkoutsModel(null, user, date);
-                    System.out.println(newWorkout.getId());
                     return workoutsRepo.save(newWorkout);
                 });
 

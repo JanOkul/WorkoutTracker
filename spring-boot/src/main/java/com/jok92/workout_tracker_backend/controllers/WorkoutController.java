@@ -76,7 +76,6 @@ public class WorkoutController {
             @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal CustomUserDetail principal,
             @RequestBody UpdateSet body) {
-        System.out.println(body);
         return workoutService.changeExerciseForDate(principal.getId(), date, body);
     }
 

@@ -1,18 +1,12 @@
 package com.jok92.workout_tracker_backend.services;
 
-import com.jok92.workout_tracker_backend.models.workout.Requests.stats.GetWorkouts;
 import com.jok92.workout_tracker_backend.models.workout.Responses.stats.WorkoutEntry;
 import com.jok92.workout_tracker_backend.models.workout.Responses.stats.WorkoutForExcercise;
 
-import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.GroupedSets;
 import com.jok92.workout_tracker_backend.models.workout.Responses.workouts.ScrubbedSetModel;
 import com.jok92.workout_tracker_backend.repositories.SetRepo;
-import com.jok92.workout_tracker_backend.repositories.WorkoutsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.*;

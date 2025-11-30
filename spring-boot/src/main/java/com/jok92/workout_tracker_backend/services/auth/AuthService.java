@@ -62,7 +62,6 @@ public class AuthService {
         UserModel userId = userRepo.findByEmail(details.getEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
-        System.out.println(userId.getId().toString());
         return refreshService.issueNewAccessRefreshPair(userId.getId());
     }
 

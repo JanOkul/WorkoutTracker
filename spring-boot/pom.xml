@@ -108,7 +108,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 
 	<build>
@@ -116,6 +116,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.jok92.workout_tracker_backend.WorkoutTrackerBackendApplication</mainClass>
+                </configuration>
 			</plugin>
 
             <plugin>

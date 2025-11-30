@@ -1,5 +1,6 @@
 FROM postgres:18.0-alpine3.22
 
-COPY schema.sql /docker-entrypoint-initdb.d/
+COPY schema.sql /docker-entrypoint-initdb.d/01-schema.sql
+COPY init-user.sh /docker-entrypoint-initdb.d/02-init-user.sh
 
-COPY test_data.sql /docker-entrypoint-initdb.d/
+RUN chmod +x /docker-entrypoint-initdb.d/02-init-user.sh

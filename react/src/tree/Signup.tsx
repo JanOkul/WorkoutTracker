@@ -22,6 +22,7 @@ const SignUp = () => {
     const apiUrl = "/api/auth/signup";
 
     const requestBody = {
+      displayName: signupData.get("displayName"),
       email: signupData.get("email"),
       password: signupData.get("password"),
       confirmPassword: signupData.get("confirmPassword"),
@@ -55,7 +56,12 @@ const SignUp = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={signupAction}>
-            <Label htmlFor="email" className="pb-2">
+            <Label htmlFor="displayName" className="pb-2">
+              Username
+            </Label>
+            <Input id="displayName" name="displayName" required />
+
+            <Label htmlFor="email" className="pb-2 pt-4">
               Email Address
             </Label>
             <Input id="email" name="email" type="email" required />

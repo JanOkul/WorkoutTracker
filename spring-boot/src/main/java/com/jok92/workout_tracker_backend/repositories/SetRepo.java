@@ -4,14 +4,12 @@ import com.jok92.workout_tracker_backend.models.workout.DatabaseModels.SetModel;
 import com.jok92.workout_tracker_backend.models.workout.Responses.stats.WorkoutEntry;
 import org.springframework.data.repository.query.Param;  // ✅ CORRECT
 
-import org.hibernate.jdbc.Work;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 

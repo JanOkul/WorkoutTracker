@@ -7,14 +7,24 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import io.netty.handler.codec.base64.Base64Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -25,8 +35,7 @@ public class JwtService {
     @Autowired
     UserRepo userRepo;
 
-    @Value("${jwt.secret}")
-    private String signingKey;
+    private final String signingKey = JwtKeyManager.getSigningKey();;
 
     @Value("${jwt.expiryMins}")
     private Integer expiryMins;
@@ -56,7 +65,6 @@ public class JwtService {
     }
 
     private Key getKey() {
-        System.out.println(signingKey);
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(signingKey));
     }
 
