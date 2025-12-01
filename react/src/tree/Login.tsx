@@ -1,20 +1,18 @@
 import apiAxios from "@/api/axiosInterceptor";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircleIcon } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 export interface isAuthResponse {
   isAuthenticated: boolean;
 }
@@ -36,11 +34,12 @@ const Login = () => {
 
     try {
       await apiAxios.post(apiUrl, requestBody);
-
+      setLoginFailed(false);
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
       setLoginFailed(true);
+      toast.error("Incorrect email or password");
     }
   }
 
@@ -100,16 +99,6 @@ const Login = () => {
             </Button>
           </form>
         </CardContent>
-        <CardFooter>
-          {loginFailed ? (
-            <Alert variant="destructive">
-              <AlertCircleIcon />
-              <AlertTitle> Invalid Username or Password</AlertTitle>
-            </Alert>
-          ) : (
-            <></>
-          )}
-        </CardFooter>
       </Card>
     </div>
   );

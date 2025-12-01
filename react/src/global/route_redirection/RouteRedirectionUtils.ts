@@ -16,7 +16,9 @@ export async function verifyAuth(
   try {
     const response = await apiAxios.get<isAuthResponse>("/api/auth/status");
 
-    if (response.data.isAuthenticated === isAuthenticated) {
+    const data = response.data.isAuthenticated;
+
+    if (data === isAuthenticated || typeof data !== "boolean") {
       return true;
     }
 

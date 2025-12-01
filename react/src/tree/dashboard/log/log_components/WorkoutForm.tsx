@@ -57,7 +57,7 @@ const WorkoutForm = ({ date, setWorkout, workout }: workoutProp) => {
     }));
 
     try {
-      const response = await apiAxios.post(dateApiUrl, {
+      await apiAxios.post(dateApiUrl, {
         exerciseId,
         setNumber: newSetNumber,
         weight: 0,

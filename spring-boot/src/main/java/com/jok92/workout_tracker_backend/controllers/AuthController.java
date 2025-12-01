@@ -49,7 +49,7 @@ public class AuthController {
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken.toString())
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Strict")
                 .path("/api/auth/")
                 .maxAge(Duration.ofDays(details.isRememberMe() ? refreshRememberMeExpiryDays : -1))
@@ -58,7 +58,7 @@ public class AuthController {
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Strict")
                 .path("/api/")
                 .maxAge(Duration.ofMinutes(accessExpiryMins))
@@ -75,7 +75,7 @@ public class AuthController {
         authService.logout(refreshToken);
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Strict")
                 .path("/api/")
                 .maxAge(Duration.ZERO)
@@ -83,7 +83,7 @@ public class AuthController {
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Strict")
                 .path("/api/auth/")
                 .maxAge(Duration.ZERO)
@@ -104,16 +104,16 @@ public class AuthController {
         UUID refreshToken = tokenPair.refreshToken();
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken.toString())
-                .httpOnly(false)
-                .secure(false)
-                .sameSite("Strict") //todo change
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
                 .path("/api/auth/")
                 .maxAge(cookie.getMaxAge())
                 .build();
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-                .httpOnly(false)
-                .secure(false)
+                .httpOnly(true)
+                .secure(true)
                 .sameSite("Strict")
                 .path("/api/")
                 .maxAge(Duration.ofMinutes(accessExpiryMins))

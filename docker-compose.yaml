@@ -36,8 +36,6 @@ services:
       context: ./spring-boot
       dockerfile: Dockerfile
     container_name: workout-tracker-backend
-    ports:
-      - "8080:8080"
     volumes:
       - backend-data:/app/data
     environment:
@@ -57,6 +55,21 @@ services:
     networks:
       - app-network
     restart: unless-stopped
+  
+  frontend:
+    build:
+      context: ./react
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - app-network
+    restart: unless-stopped
+
+
 volumes:
   postgres-data:
     driver: local

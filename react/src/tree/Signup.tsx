@@ -1,20 +1,25 @@
 import apiAxios from "@/api/axiosInterceptor";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-import { type FormEvent } from "react";
+import { AlertCircleIcon } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [signupFailed, setSignupFailed] = useState(false);
 
   async function signupAction(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -25,16 +30,23 @@ const SignUp = () => {
       displayName: signupData.get("displayName"),
       email: signupData.get("email"),
       password: signupData.get("password"),
-      confirmPassword: signupData.get("confirmPassword"),
       age: signupData.get("age"),
       weight: signupData.get("weight"),
     };
 
+    if (requestBody.password !== signupData.get("confirmPassword")) {
+      setSignupFailed(true);
+      toast.error("Password do not match.");
+      return;
+    }
+
     try {
       await apiAxios.post(apiUrl, requestBody);
+      setSignupFailed(false);
       navigate("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
+        toast.error("Signup Failed");
         console.error("Signup failed:", err.response.status, err.response.data);
       } else {
         console.error("Action Failed (Network Error):", err);
@@ -59,17 +71,40 @@ const SignUp = () => {
             <Label htmlFor="displayName" className="pb-2">
               Username
             </Label>
-            <Input id="displayName" name="displayName" required />
+            <Input
+              id="displayName"
+              name="displayName"
+              required
+              className={
+                signupFailed ? "border-red-500 text-red-500" : undefined
+              }
+            />
 
             <Label htmlFor="email" className="pb-2 pt-4">
               Email Address
             </Label>
-            <Input id="email" name="email" type="email" required />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className={
+                signupFailed ? "border-red-500 text-red-500" : undefined
+              }
+            />
 
             <Label htmlFor="password" className="pb-2 pt-4">
               Password
             </Label>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              className={
+                signupFailed ? "border-red-500 text-red-500" : undefined
+              }
+            />
 
             <Label htmlFor="confirmPassword" className="pb-2 pt-4">
               Confirm Password
@@ -79,6 +114,9 @@ const SignUp = () => {
               name="confirmPassword"
               type="password"
               required
+              className={
+                signupFailed ? "border-red-500 text-red-500" : undefined
+              }
             />
 
             <Label htmlFor="age" className="pb-2 pt-4">
@@ -91,18 +129,40 @@ const SignUp = () => {
               min="16"
               max="200"
               required
+              className={
+                signupFailed ? "border-red-500 text-red-500" : undefined
+              }
             />
 
             <Label htmlFor="weight" className="pb-2 pt-4">
               Weight (kg)
             </Label>
-            <Input id="weight" name="weight" type="number" min="1" required />
+            <Input
+              id="weight"
+              name="weight"
+              type="number"
+              min="1"
+              required
+              className={
+                signupFailed ? "border-red-500 text-red-500" : undefined
+              }
+            />
 
             <Button type="submit" className="mt-6 w-full">
               Sign Up
             </Button>
           </form>
         </CardContent>
+        <CardFooter>
+          {signupFailed ? (
+            <Alert variant="destructive">
+              <AlertCircleIcon />
+              <AlertTitle> Invalid Username or Password</AlertTitle>
+            </Alert>
+          ) : (
+            <></>
+          )}
+        </CardFooter>
       </Card>
     </div>
   );
