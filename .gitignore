@@ -5,10 +5,11 @@
 .mvn
 */target/
 
-*/dev-dist
-*/dist
-*/build
-/out
+*/dev-dist/
+*/dist/
+*/build/
+*/out/
+*/node_modules
 
 # Logs
 logs
