@@ -36,6 +36,7 @@ public class JwtKeyManager {
 
                 if (!existingKey.isEmpty()) {
                     logger.info("Signing key read successfully");
+                    logger.debug("Signing key: {}", existingKey);
                     return existingKey;
                 }
 
@@ -45,13 +46,14 @@ public class JwtKeyManager {
             }
 
             String newKey = generateBase64Key();
+            logger.debug("Created new key: {}", newKey);
 
             Files.writeString(filePath, newKey, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
             logger.info("New signing key created and written to disk.");
             return newKey;
 
         } catch (Exception e) {
-            logger.error("Error managing signing key file. Generating ephemeral key.", e);
+            logger.error("Error managing signing key file. Generating new temporary key.", e);
             return generateBase64Key();
         }
     }
